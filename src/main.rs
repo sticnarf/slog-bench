@@ -1,4 +1,4 @@
-use std::{fs::OpenOptions, thread};
+use std::{fs::OpenOptions, io::BufWriter, thread};
 
 use slog::{slog_o, Drain};
 use slog_async::Async;
@@ -12,7 +12,7 @@ fn main() {
         .truncate(true)
         .open(log_path)
         .unwrap();
-    let decorator = slog_term::PlainDecorator::new(file);
+    let decorator = slog_term::PlainDecorator::new(BufWriter::new(file));
     let drain = slog_term::FullFormat::new(decorator).build().fuse();
     let async_log = Async::new(drain)
         .chan_size(10240)
